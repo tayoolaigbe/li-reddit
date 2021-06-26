@@ -12,6 +12,12 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { MyContext } from './types';
 
+// declare module 'express-session' {
+// 	interface Session {
+// 		userId: number;
+// 	}
+// }
+
 const main = async () => {
 	const orm = await MikroORM.init(microConfig);
 	orm.getMigrator().up();
