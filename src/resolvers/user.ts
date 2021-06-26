@@ -48,7 +48,7 @@ export class UserResolver {
 				errors: [
 					{
 						field: 'Username',
-						message: 'Length of Username should be more that 4',
+						message: 'Length of Username should be >= 4',
 					},
 				],
 			};
@@ -59,7 +59,7 @@ export class UserResolver {
 				errors: [
 					{
 						field: 'Password',
-						message: 'Length of Password should be more that 4',
+						message: 'Length of Password should be >= 4',
 					},
 				],
 			};
@@ -93,7 +93,7 @@ export class UserResolver {
 	@Mutation(() => UserResponse)
 	async login(
 		@Arg('options') options: UsernamePasswordInput,
-		@Ctx() { em }: MyContext
+		@Ctx() { em, req }: MyContext
 	): Promise<UserResponse> {
 		const user = await em.findOne(User, { username: options.username });
 		if (!user) {
@@ -112,11 +112,13 @@ export class UserResolver {
 				errors: [
 					{
 						field: 'Password',
-						message: 'Incorrect',
+						message: 'Incorrect Password',
 					},
 				],
 			};
 		}
+
+		req.session.userId = user.id;
 
 		return {
 			user,
